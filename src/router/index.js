@@ -96,6 +96,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/TreeDemo',
+    component: Layout,
+    redirect: '/TreeDemo/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/tree-demo/index'),
+        name: 'TreeDemo',
+        meta: { title: 'TreeDemo', icon: 'tree-table', noCache: true }
+      }
+    ]
+  },
+  {
     path: '/guide',
     component: Layout,
     redirect: '/guide/index',

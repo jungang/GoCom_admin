@@ -114,7 +114,7 @@ export default {
   },
   watch: {
     $route: {
-      handler: function(route) {
+      handler: function(route) { // 转发参数
         const query = route.query
         if (query) {
           this.redirect = query.redirect
@@ -166,7 +166,7 @@ export default {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ path: this.redirect || '/', query: this.otherQuery }) // 转发参数
               this.loading = false
             })
             .catch(() => {

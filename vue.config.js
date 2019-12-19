@@ -8,12 +8,14 @@ function resolve(dir) {
 
 const name = defaultSettings.title || 'vue Element Admin' // page title
 
+const rap2 = `http://rap2api.taobao.org/app/mock/239973/dev-api`
+
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
 // For example, Mac: sudo npm run
 // You can change the port by the following method:
 // port = 9527 npm run dev OR npm run dev --port = 9527
-const port = process.env.port || process.env.npm_config_port || 9527 // dev port
+const port = process.env.port || process.env.npm_config_port || 8080 // dev port
 
 // All configuration item explanations can be find in https://cli.vuejs.org/config/
 module.exports = {
@@ -37,10 +39,47 @@ module.exports = {
       errors: true
     },
     proxy: {
+
+      //本地mock
+      [process.env.VUE_APP_BASE_API + '/user/info']:{
+        // target: rap2,
+        target: `http://127.0.0.1:${port}/mock/user/info`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/user/info']: ''}
+      },
+      //本地mock
+      [process.env.VUE_APP_BASE_API + '/user/login']:{
+        // target: rap2,
+        target: `http://127.0.0.1:${port}/mock/user/login`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/user/login']: ''}
+      },
+      //本地mock
+      [process.env.VUE_APP_BASE_API + '/roles']:{
+        // target: rap2,
+        target: `http://127.0.0.1:${port}/mock/roles`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/roles']: ''}
+      },
+
+      //本地mock
+      [process.env.VUE_APP_BASE_API + '/routes']:{
+        target: `http://127.0.0.1:${port}/mock/routes`,
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API + '/routes']: ''}
+      },
+
+
+        //RAP2
       // change xxx-api/login => mock/login
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:${port}/mock`,
+        target: rap2,
+        // target: `http://127.0.0.1:${port}/mock`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
