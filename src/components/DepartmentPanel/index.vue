@@ -16,7 +16,7 @@
       highlight-current
       default-expand-all
       :expand-on-click-node="false"
-      :render-content="renderContent"
+
       :filter-node-method="filterNode"
       draggable
       :allow-drop="allowDrop"
@@ -30,6 +30,7 @@
       @node-drag-end="handleDragEnd"
       @node-drop="handleDrop"
     />
+    <!--    :render-content="renderContent"-->
   </div>
 
 </template>
@@ -42,6 +43,12 @@ let id = 1000
 
 export default {
   name: 'DepartmentPanel',
+  props: {
+    type: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       filterText: '',
@@ -58,9 +65,12 @@ export default {
       this.$refs.tree.filter(val)
     }
   },
-  mounted() {},
+  mounted() {
+    console.log('this.setSelected....')
+  },
   created() {
     this.getTree()
+    console.log(this.type)
   },
   methods: {
     ...mapMutations('department',
@@ -80,8 +90,17 @@ export default {
     handleNodeCheck(data) {
       console.log('handleNodeCheck', data)
     },
-    handleCheck(data) {
-      this.setSelected(this.$refs.tree.getCheckedNodes())
+    handleCheck(data, checked, node) {
+      if (this.type === 'select-person-single' && checked) this.$refs.tree.setCheckedNodes([data])
+      this.setSelected(this.$refs.tree.getCheckedNodes()) // 保存数据
+    },
+    addDisabledLable(data) {
+      data.forEach((node) => {
+        if (node.ifLeaf === false) {
+          node.disabled = true
+          return this.addDisabledLable(node.children)
+        }
+      })
     },
     filterNode(value, data) {
       if (!value) return true
@@ -117,6 +136,8 @@ export default {
       this.loading = true
       this.$emit('create') // for test
       getTree(this.listQuery).then(response => {
+        if (this.type === 'select-person-single') this.addDisabledLable(response.data) // 判断是否多选
+
         this.data = response.data
         this.loading = false
         console.log(response)
